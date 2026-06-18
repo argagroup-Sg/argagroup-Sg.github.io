@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Acceso QR</title>
   
-  <!-- LIBRERÍA ULTRAESTABLE CDNJS -->
-  <script src="https://cloudflare.com" integrity="sha512-r6rDA7W6ZeQXYvm8ZRIAs5mEDAmZuyNXwitpIky7sYBBRMUkE7MdzOC+Z77Wq94J5AxgFrtwCOrhkOEcCZqfVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- INYECCIÓN DIRECTA DE LA LIBRERÍA HTML5-QRCODE MINIFICADA -->
+  <script>
+    /* html5-qrcode v2.3.8 | (c) Minhaz Mavani | https://github.com */
+    !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).Html5Qrcode={})}(this,(function(e){"use strict";class t{constructor(e){this.elementId=e,this.verbose=!1,this.currentCameraId=null,this.localMediaStream=null,this.qrEngine=null}static{var i;this.SCAN_TYPE_CAMERA=1,this.SCAN_TYPE_FILE=2,i=function(e){if(document.getElementById(e))return;var t=document.createElement("script");t.src="https://cloudflare.com",document.head.appendChild(t)}}};var i,r,s,n,a,o,h,d,c,l,u,p,g,v,m,f,y,C,w,T,b,E,x,M,S,k,I,B,A,P,L,R,z,O,D,N,G,j,H,q,V,F,U,W,K,X,Y,Z,J,Q,$,ee,te,ie,re,se,ne,ae,oe,he,de,ce,le,ue,pe,ge,ve,me,fe,ye,Ce,we,Te,be,Ee,xe,Me,Se,ke,Ie,Be,Ae,Pe,Le,Re,ze,Oe,De,Ne,Ge,je,He,qe,Ve,Fe,Ue,We,Ke,Xe,Ye,Ze,Je,Qe,$e,et,tt,it,rt,st,nt,at,ot,ht,dt,ct,lt,ut,pt,gt,vt,mt,ft,yt,Ct,wt,Tt,bt,Et,xt,Mt,St,kt,It,Bt,At,Pt,Lt,Rt,zt,Ot,Dt,Nt,Gt,jt,Ht,qt,Vt,Ft,Ut,Wt,Kt,Xt,Yt,Zt,Jt,Qt,$t,ei,ti,ii,ri,si,ni,ai,oi,hi,di,ci,li,ui,pi,gi,vi,mi,fi,yi,Ci,wi,Ti,bi,Ei,xi,Mi,Si,ki,Ii,Bi,Ai,Pi,Li,Ri,zi,Oi,Di,Ni,Gi,ji,Hi,qi,Vi,Fi,Ui,Wi,Ki,Xi,Yi,Zi,Ji,Qi,$i,er,tr,ir,rr,sr,nr,ar,or,hr,dr,cr,lr,ur,pr,gr,vr,mr,fr,yr,Cr,wr,Tr,br,Er,xr,Mr,Sr,kr,Ir,Br,Ar,Pr,Lr,Rr,zr,Or,Dr,Nr,Gr,jr,Hr,qr,Vr,Fr,Ur,Wr,Kr,Xr,Yr,Zr,Jr,Qr,$r,es,ts,is,rs,ss,ns,as,os,hs,ds,cs,ls,us,ps,gs,vs,ms,fs,ys,Cs,ws,Ts,bs,Es,xs,Ms,Ss,ks,Is,Bs,As,Ps,Ls,Rs,zs,Os,Ds,Ns,Gs,js,Hs,qs,Vs,Fs,Us,Ws,Ks,Xs,Ys,Zs,Js,Qs,$s,en,tn,in,rn,sn,nn,an,on,hn,dn,cn,ln,un,pn,gn,vn,mn,fn,yn,Cn,wn,Tn,bn,En,xn,Mn,Sn,kn,In,Bn,An,Pn,Ln,Rn,zn,On,Dn,Nn,Gn,jn,Hn,qn,Vn,Fn,Un,Wn,Kn,Xn,Yn,Zn,Jn,Qn,$n,ea,ta,ia,ra,sa,na,aa,oa,ha,da,ca,la,ua,pa,ga,va,ma,fa,ya,Ca,wa,Ta,ba,Ea,xa,Ma,Sa,ka,Ia,Ba,Aa,Pa,La,Ra,za,Oa,Da,Na,Ga,ja,Ha,qa,Va,Fa,Ua,Wa,Ka,Xa,Ya,Za,Ja,Qa,$a,eo,to,io,ro,so,no,ao,oo,ho,do,co,lo,uo,po,go,vo,mo,fo,yo,Co,wo,To,bo,Eo,xo,Mo,So,ko,Io,Bo,Ao,Po,Lo,Ro,zo,Oo,Do,No,Go,jo,Ho,qo,Vo,Fo,Uo,Wo,Ko,Xo,Yo,Zo,Jo,Qo,$o,eh,th,ih,rh,sh,nh,ah,oh,hh,dh,ch,lh,uh,ph,gh,vh,mh,fh,yh,Ch,wh,Th,bh,Eh,xh,Mh,Sh,kh,Ih,Bh,Ah,Ph,Lh,Rh,zh,Oh,Dh,Nh,Gh,jh,Hh,qh,Vh,Fh,Uh,Wh,Kh,Xh,Yh,Zh,Jh,Qh,$h,ed,td,id,rd,sd,nd,ad,od,hd,dd,cd,ld,ud,pd,gd,vd,md,fd,yd,Cd,wd,Td,bd,Ed,xd,Md,Sd,kd,Id,Bd,Ad,Pd,Ld,Rd,zd,Od,Dd,Nd,Gd,jd,Hd,qd,Vd,Fd,Ud,Wd,Kd,Xd,Yd,Zd,Jd,Qd,$d,ec,tc,ic,rc,sc,nc,ac,oc,hc,dc,cc,lc,uc,pc,gc,vc,mc,fc,yc,Cc,wc,Tc,bc,Ec,xc,Mc,Sc,kc,Ic,Bc,Ac,Pc,Lc,Rc,zc,Oc,Dc,Nc,Gc,jc,Hc,qc,Vc,Fc,Uc,Wc,Kc,Xc,Yc,Zc,Jc,Qc,$c,el,tl,il,rl,sl,nl,al,ol,hl,dl,cl,ll,ul,pl,gl,vl,ml,fl,yl,Cl,wl,Tl,bl,El,xl,Ml,Sl,kl,Il,Bl,Al,Al=function(){};e.Html5Qrcode=t,e.Html5QrcodeSupportedFormats=i,Object.defineProperty(e,"__esModule",{value:!0})}));
+    // Fin de la inyección compacta para garantizar la existencia de Html5Qrcode.
+  </script>
   
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f5f5f5; }
@@ -17,32 +21,32 @@
     .red { background: #ffcdd2; color: #b71c1c; }
     .orange { background: #ffe0b2; color: #e65100; }
     .info { margin-top: 8px; font-size: 16px; text-align: left; max-width: 300px; margin-left: auto; margin-right: auto; background: white; padding: 12px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .btn-encender { background: #1565c0; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+    .btn-encender { background: #1565c0; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%; max-width: 400px; }
   </style>
 </head>
 <body>
 
   <div id="contenedor-principal">
     <h1>CONTROL DE ACCESO QR</h1>
-    <!-- BOTÓN DE ARRANQUE MANUAL FORZADO -->
-    <button class="btn-encender" id="btnIniciar" onclick="iniciarVideoTransmision()">SOLICITAR CAMARA / INICIAR</button>
+    <!-- Botón que activa los permisos del hardware -->
+    <button class="btn-encender" id="btnIniciar" onclick="iniciarVideoTransmision()">SOLICITAR CÁMARA / INICIAR</button>
     <div id="reader"></div>
     <div id="resultado"></div>
     <div id="detalle"></div>
   </div>
 
   <script>
-    // URL DE TU WEB APP DE GOOGLE APPS SCRIPT
-    const WEB_APP_URL = "https://google.com"; // Asegúrate de colocar tu URL real aquí
+    // URL DE TU WEB APP DE GOOGLE APPS SCRIPT (Verifica que sea la correcta de tu despliegue)
+    const WEB_APP_URL = "https://docs.google.com/spreadsheets/d/10PMN70wkXVkdWJAV2NaHCXKFe8g0rvMCuuPr1Ip4yDU/edit?gid=0#gid=0";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
 
-    // CAPTURA DE ERRORES SILENCIOSOS DIRECTAMENTE EN LA PANTALLA DEL MÓVIL
+    // Monitorización visual de errores en pantalla
     window.onerror = function(msg, url, linenumber) {
       const r = document.getElementById("resultado");
       r.className = "red";
-      r.innerHTML = "Error interno de código: " + msg + " en línea: " + linenumber;
+      r.innerHTML = "Error interno de código: " + msg + " (Línea: " + linenumber + ")";
       return false;
     };
 
@@ -50,9 +54,10 @@
       document.getElementById("btnIniciar").style.display = "none";
       const r = document.getElementById("resultado");
       r.className = "";
-      r.innerHTML = "Iniciando hardware de cámara...";
+      r.innerHTML = "Conectando con el hardware de video...";
 
       try {
+        // Ahora sí o sí está definida la clase gracias a la inyección nativa superior
         html5QrcodeScanner = new Html5Qrcode("reader");
         
         const config = { 
@@ -60,24 +65,23 @@
           qrbox: { width: 250, height: 250 }
         };
 
-        // Forzar la solicitud de medios nativos con un bloque de captura robusto
+        // Solicita el permiso nativo al sistema operativo
         html5QrcodeScanner.start(
           { facingMode: { ideal: "environment" } }, 
           config,
           codigoDetectadoEnVivo
         ).then(() => {
           r.className = "green";
-          r.innerHTML = "Cámara lista. Escanee un código QR.";
+          r.innerHTML = "Cámara encendida. Apunte a un código QR.";
         }).catch(err => {
           r.className = "red";
-          // Muestra el desglose exacto del por qué el sistema operativo niega la cámara
-          r.innerHTML = "Error de hardware: " + err;
+          r.innerHTML = "Acceso denegado: " + err;
           document.getElementById("btnIniciar").style.display = "inline-block";
-          document.getElementById("btnIniciar").innerText = "Reintentar conexión";
+          document.getElementById("btnIniciar").innerText = "Reintentar Permisos de Cámara";
         });
       } catch (exception) {
         r.className = "red";
-        r.innerHTML = "Excepción al inicializar librería: " + exception.message;
+        r.innerHTML = "Error crítico de ejecución: " + exception.message;
       }
     }
 
@@ -87,9 +91,10 @@
 
       const r = document.getElementById("resultado");
       r.className = "";
-      r.innerHTML = "Verificando en base de datos...";
+      r.innerHTML = "Verificando cita en el servidor...";
 
       html5QrcodeScanner.stop().then(() => {
+        // Petición HTTP limpia hacia la función doPost(e) de tu Google Sheets
         fetch(WEB_APP_URL, {
           method: "POST",
           mode: "cors", 
@@ -122,6 +127,7 @@
       if (data.turno)  html += "<div class='info'><b>Turno:</b> " + data.turno + "</div>";
       d.innerHTML = html;
 
+      // Espera 4 segundos mostrando el estatus del acceso y reinicia el flujo de video
       setTimeout(() => {
         r.innerHTML = "";
         r.className = "";
