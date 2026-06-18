@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Acceso QR</title>
   
-  <!-- CARGADOR DE LIBRERÍA DE ALTA DISPONIBILIDAD -->
-  <script src="https://jsdelivr.net"></script>
+  <!-- CORRECCIÓN CLAVE: Se enlaza de forma local a tu propio repositorio de GitHub -->
+  <script src="./html5-qrcode.min.js"></script>
   
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f5f5f5; }
@@ -32,12 +32,11 @@
 
   <script>
     // URL DE TU WEB APP DE GOOGLE APPS SCRIPT
-    const WEB_APP_URL = "https://docs.google.com/spreadsheets/d/10PMN70wkXVkdWJAV2NaHCXKFe8g0rvMCuuPr1Ip4yDU/edit?gid=0#gid=0";
+    const WEB_APP_URL = "https://docs.google.com/spreadsheets/d/10PMN70wkXVkdWJAV2NaHCXKFe8g0rvMCuuPr1Ip4yDU/edit?gid=0#gid=0"; // Reemplázala con tu URL real si varía
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
 
-    // Monitorización de errores en pantalla
     window.onerror = function(msg, url, linenumber) {
       const r = document.getElementById("resultado");
       r.className = "red";
@@ -48,10 +47,9 @@
     function verificarYArrancar() {
       const r = document.getElementById("resultado");
       
-      // Verificación de seguridad de la librería antes de encender hardware
       if (typeof Html5Qrcode === "undefined") {
         r.className = "red";
-        r.innerHTML = "La librería del escáner no se descargó correctamente. Verifique su conexión a internet.";
+        r.innerHTML = "Error local: El archivo de la librería no se cargó correctamente desde GitHub.";
         return;
       }
       
