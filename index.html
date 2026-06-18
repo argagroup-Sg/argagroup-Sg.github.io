@@ -32,7 +32,7 @@
 
   <script>
     // URL DE TU NUEVA IMPLEMENTACIÓN DE APPS SCRIPT ACTUALIZADA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwgQgLYTUWUmJ2DEH-uovM2yWBbve8KEOK8xbtBTxNtcwz1qn2_Xk2D2ZzuPyk2kbCj/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzXZI82KzePgT0b5-ouS-xVpaPieHNNq--hlga57xnBM585nUT5vtsNDEMPBEgzmDLE/exec";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
@@ -104,20 +104,27 @@
       r.innerHTML = "Consultando validez del pase...";
 
       html5QrcodeScanner.stop().then(() => {
-        // ENTRADA DIRECTA: no-cors evita que el navegador frene la petición con errores de pre-vuelo
+        // CORRECCIÓN CLAVE: Enviamos datos estructurados como un formulario estándar.
+        // Esto permite usar mode: "cors" de forma segura y leer las variables de respuesta de Google.
+        const datosEnviar = new URLSearchParams();
+        datosEnviar.append("codigoQR", decodedText);
+
         fetch(WEB_APP_URL, {
           method: "POST",
-          mode: "no-cors", 
-          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
-          body: JSON.stringify({ codigoQR: decodedText })
+          mode: "cors", 
+          body: datosEnviar
         })
-        .then(() => {
-          // El modo no-cors procesa de forma ciega el envío, notificamos al usuario del registro en tránsito
-          mostrarRespuestaServidor({ ok: true, color: "green", mensaje: "Código leído y enviado correctamente." });
+        .then(response => {
+          if (!response.ok) throw new Error("Fallo en la respuesta del servidor");
+          return response.json();
+        })
+        .then(data => {
+          // El navegador ahora sí lee las respuestas reales y detalladas del backend.
+          mostrarRespuestaServidor(data);
         })
         .catch(err => {
           console.error(err);
-          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error al transmitir la información." });
+          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error de comunicación o código inválido." });
         });
       }).catch(err => {
         procesandoScan = false;
