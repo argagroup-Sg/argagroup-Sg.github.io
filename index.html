@@ -49,11 +49,11 @@
       };
 
       // Inicia la transmisión de video forzando la cámara trasera
-      html5QrcodeScanner.start(
-        { facingMode: "environment" }, 
-        config,
-        codigoDetectadoEnVivo
-      ).catch(err => {
+      // Intenta usar la cámara trasera; si no puede, usa la cámara disponible por defecto 
+      html5QrcodeScanner.start( 
+        { facingMode: { ideal: "environment" } },
+        config,codigoDetectadoEnVivo
+        ).catch(err => {
         const r = document.getElementById("resultado");
         r.className = "red";
         r.innerHTML = "Error de cámara: Por favor, otorgue permisos de acceso en su navegador.";
