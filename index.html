@@ -24,16 +24,14 @@
 
   <div id="contenedor-principal">
     <h1>CONTROL DE ACCESO QR</h1>
-    <button class="btn-encender" id="btnIniciar" onclick="verificarYArrancar()">SOLICITAR CÁMARA / INICIAR</button>
+    <button class="btn-encender" id="btnIniciar" onclick="verificarYArrancar()">SOLICITAR CÁMARA</button>
     <div id="reader"></div>
     <div id="resultado"></div>
     <div id="detalle"></div>
   </div>
 
   <script>
-    // 1. CORRECCIÓN MANDATORIA: Debes reemplazar esta URL por tu enlace ejecutable de Apps Script.
-    // Ej: "https://google.com"
-    // (La URL de Google Sheets actual causará un error de comunicación al escanear)
+    // REEMPLAZA ESTA URL CON TU ENLACE EJECUTABLE DE GOOGLE APPS SCRIPT (/exec)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8iWNi6etMFaA_cWcT3ze-1wBoKp9-l_lbjjxNPsKDBgJBLJ3ScYZ_tdV1aOdjDo89/exec";
 
     let html5QrcodeScanner = null;
@@ -48,13 +46,11 @@
 
     function verificarYArrancar() {
       const r = document.getElementById("resultado");
-      
       if (typeof Html5Qrcode === "undefined") {
         r.className = "red";
         r.innerHTML = "Error local: El archivo de la librería no se cargó correctamente desde GitHub.";
         return;
       }
-      
       iniciarVideoTransmision();
     }
 
@@ -67,24 +63,34 @@
       try {
         html5QrcodeScanner = new Html5Qrcode("reader");
         
-        const config = { 
-          fps: 15, 
-          qrbox: { width: 250, height: 250 }
-        };
+        // CORRECCIÓN DE RESTRICCIONES: Se elimina 'fps' y 'qrbox' fijos para evitar OverconstrainedError en móviles
+        const config = {}; 
 
-        // 2. CORRECCIÓN DE CÁMARA: Se cambia el objeto { ideal: "environment" } por un string directo
+        // ARRANQUE INTELIGENTE: Intenta cámara trasera con formato de objeto exacto requerido por la librería
         html5QrcodeScanner.start(
-          "environment", 
+          { facingMode: "environment" }, 
           config,
           codigoDetectadoEnVivo
         ).then(() => {
           r.className = "green";
           r.innerHTML = "Cámara encendida. Enfoque un código QR.";
         }).catch(err => {
-          r.className = "red";
-          r.innerHTML = "Acceso denegado o error de hardware: " + err;
-          document.getElementById("btnIniciar").style.display = "inline-block";
-          document.getElementById("btnIniciar").innerText = "Reintentar Permisos";
+          console.warn("Fallo cámara trasera, intentando cámara por defecto del sistema...", err);
+          
+          // PLAN B: Si la cámara trasera falla por restricciones, arranca con cualquier lente activo del dispositivo
+          html5QrcodeScanner.start(
+            undefined, 
+            config,
+            codigoDetectadoEnVivo
+          ).then(() => {
+            r.className = "green";
+            r.innerHTML = "Cámara encendida. Si es la frontal, gire el teléfono.";
+          }).catch(errFinal => {
+            r.className = "red";
+            r.innerHTML = "Acceso denegado o error de hardware: " + errFinal;
+            document.getElementById("btnIniciar").style.display = "inline-block";
+            document.getElementById("btnIniciar").innerText = "Reintentar Permisos";
+          });
         });
       } catch (exception) {
         r.className = "red";
