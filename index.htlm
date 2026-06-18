@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control de Acceso QR</title>
+  <!-- LIBRERÍA CORRECTA: Importación oficial de Html5Qrcode -->
+  <script src="https://unpkg.com"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f5f5f5; }
+    h1 { color: #1565c0; }
+    #reader { width: 100%; max-width: 400px; margin: auto; border-radius: 10px; overflow: hidden; background: #000; }
+    #resultado { margin-top: 20px; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 18px; min-height: 25px; }
+    .green { background: #c8e6c9; color: #1b5e20; }
+    .red { background: #ffcdd2; color: #b71c1c; }
+    .orange { background: #ffe0b2; color: #e65100; }
+    .info { margin-top: 8px; font-size: 16px; text-align: left; max-width: 300px; margin-left: auto; margin-right: auto; background: white; padding: 12px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  </style>
+</head>
+<body>
+
+  <div id="contenedor-principal">
+    <h1>CONTROL DE ACCESO QR</h1>
+    <div id="reader"></div>
+    <div id="resultado"></div>
+    <div id="detalle"></div>
+  </div>
+
+  <script>
+    // URL DE TU WEB APP DE GOOGLE APPS SCRIPT (Asegúrate de cambiarla)
+    const WEB_APP_URL = "REEMPLAZA_CON_LA_URL_DE_TU_IMPLEMENTACION_DE_APPS_SCRIPT";
+
+    let html5QrcodeScanner = null;
+    let procesandoScan = false;
+
+    function iniciarVideoTransmision() {
+      // Se utiliza la clase correcta de la librería oficial
+      html5QrcodeScanner = new Html5Qrcode("reader");
+      
+      const config = { 
+        fps: 15, 
+        qrbox: { width: 250, height: 250 }
+      };
+
+      html5QrcodeScanner.start(
+        { facingMode: "environment" }, 
+        config,
+        codigoDetectadoEnVivo
+      ).catch(err => {
+        const r = document.getElementById("resultado");
+        r.className = "red";
+        r.innerHTML = "Habilite los permisos de cámara en su navegador.";
+        console.error(err);
+      });
+    }
+
+    function codigoDetectadoEnVivo(decodedText) {
+      if (procesandoScan) return;
+      procesandoScan = true; 
+
+      const r = document.getElementById("resultado");
+      r.className = "";
+      r.innerHTML = "Leyendo credenciales...";
+
+      // Detener el escáner mientras procesa la solicitud en la base de datos
+      html5QrcodeScanner.stop().then(() => {
+        
+        // CORRECCIÓN CRUCIAL: Reemplazo de google.script.run por Fetch API externa
+        fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "cors", // Permitir intercambio de datos entre servidores
+          headers: { "Content-Type": "text/plain" }, // Evita problemas de pre-vuelo CORS en Apps Script
+          body: JSON.stringify({ codigoQR: decodedText })
+        })
+        .then(response => response.json())
+        .then(data => {
+          mostrarRespuestaServidor(data);
+        })
+        .catch(err => {
+          console.error(err);
+          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error de conexión con el servidor." });
+        });
+
+      }).catch(err => {
+        console.error(err);
+        procesandoScan = false;
+      });
+    }
+
+    function mostrarRespuestaServidor(data) {
+      const r = document.getElementById("resultado");
+      const d = document.getElementById("detalle");
+
+      r.className = data.color || "red";
+      r.innerHTML = data.mensaje;
+
+      let html = "";
+      if (data.nombre) html += "<div class='info'><b>Nombre:</b> " + data.nombre + "</div>";
+      if (data.cedula) html += "<div class='info'><b>Cédula:</b> " + data.cedula + "</div>";
+      if (data.turno)  html += "<div class='info'><b>Turno:</b> " + data.turno + "</div>";
+      d.innerHTML = html;
+
+      // Espera 4 segundos en pantalla y reinicia automáticamente la transmisión del video
+      setTimeout(() => {
+        r.innerHTML = "";
+        r.className = "";
+        d.innerHTML = "";
+        procesandoScan = false;
+        iniciarVideoTransmision(); 
+      }, 4000);
+    }
+
+    // Iniciar automáticamente al cargar la página externa
+    window.addEventListener('DOMContentLoaded', iniciarVideoTransmision);
+  </script>
+
+</body>
+</html>
