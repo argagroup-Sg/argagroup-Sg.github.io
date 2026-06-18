@@ -32,7 +32,7 @@
 
   <script>
     // URL DE TU NUEVA IMPLEMENTACIÓN DE APPS SCRIPT ACTUALIZADA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyAOogzT_MASiYU_2nln9YikzZSkb21f1es4sM38B5E1e6Q1Kd8x2dNUP_4KroCRGod/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwEGMPUlCZHyVWsKt8lm6n1e6bMo-9YRdzGq-WZDr1EqpH3hPvEIpCnk7Y_DZB1DirV/exec";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
@@ -104,8 +104,6 @@
       r.innerHTML = "Consultando validez del pase...";
 
       html5QrcodeScanner.stop().then(() => {
-        // CORRECCIÓN CLAVE: Enviamos datos estructurados como un formulario estándar.
-        // Esto permite usar mode: "cors" de forma segura y leer las variables de respuesta de Google.
         const datosEnviar = new URLSearchParams();
         datosEnviar.append("codigoQR", decodedText);
 
@@ -116,15 +114,16 @@
         })
         .then(response => {
           if (!response.ok) throw new Error("Fallo en la respuesta del servidor");
-          return response.json();
+          return response.text(); // CORRECCIÓN: Leemos la respuesta como texto plano para evitar bloqueos
         })
-        .then(data => {
-          // El navegador ahora sí lee las respuestas reales y detalladas del backend.
+        .then(textoPlano => {
+          // Convertimos el texto recibido a un objeto JSON estructurado localmente
+          const data = JSON.parse(textoPlano);
           mostrarRespuestaServidor(data);
         })
         .catch(err => {
           console.error(err);
-          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error de comunicación o código inválido." });
+          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error al interpretar respuesta del servidor." });
         });
       }).catch(err => {
         procesandoScan = false;
