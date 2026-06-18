@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Acceso QR</title>
   
-  <!-- CORRECCIÓN CLAVE: Se enlaza de forma local a tu propio repositorio de GitHub -->
+  <!-- Enlace local a la librería guardada en tu GitHub -->
   <script src="./html5-qrcode.min.js"></script>
   
   <style>
@@ -31,8 +31,8 @@
   </div>
 
   <script>
-    // URL DE TU NUEVA IMPLEMENTACIÓN DE APPS SCRIPT ACTUALIZADA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwEGMPUlCZHyVWsKt8lm6n1e6bMo-9YRdzGq-WZDr1EqpH3hPvEIpCnk7Y_DZB1DirV/exec";
+    // URL DE TU IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxpBjzWdFjQO8OlA0fbhHNUOgNBAW795Q-yqObjUIV2u1-wPkBXLxpm-6ACv_CRWvF7/exec";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
@@ -62,7 +62,6 @@
 
       try {
         html5QrcodeScanner = new Html5Qrcode("reader");
-        
         const config = {}; 
 
         html5QrcodeScanner.start(
@@ -73,8 +72,6 @@
           r.className = "green";
           r.innerHTML = "Cámara encendida. Enfoque un código QR.";
         }).catch(err => {
-          console.warn("Fallo cámara trasera, intentando cámara por defecto del sistema...", err);
-          
           html5QrcodeScanner.start(
             undefined, 
             config,
@@ -86,7 +83,6 @@
             r.className = "red";
             r.innerHTML = "Acceso denegado o error de hardware: " + errFinal;
             document.getElementById("btnIniciar").style.display = "inline-block";
-            document.getElementById("btnIniciar").innerText = "Reintentar Permisos";
           });
         });
       } catch (exception) {
@@ -104,31 +100,35 @@
       r.innerHTML = "Consultando validez del pase...";
 
       html5QrcodeScanner.stop().then(() => {
-        const datosEnviar = new URLSearchParams();
-        datosEnviar.append("codigoQR", decodedText);
+        // CORRECCIÓN RADICAL CON JSONP: Rompe por completo el bloqueo CORS y lee respuestas directas
+        // Se inyecta la consulta como un tag script dinámico
+        const viejoScript = document.getElementById("jsonp-request");
+        if (viejoScript) viejoScript.remove();
 
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          mode: "cors", 
-          body: datosEnviar
-        })
-        .then(response => {
-          if (!response.ok) throw new Error("Fallo en la respuesta del servidor");
-          return response.text(); // CORRECCIÓN: Leemos la respuesta como texto plano para evitar bloqueos
-        })
-        .then(textoPlano => {
-          // Convertimos el texto recibido a un objeto JSON estructurado localmente
-          const data = JSON.parse(textoPlano);
-          mostrarRespuestaServidor(data);
-        })
-        .catch(err => {
-          console.error(err);
-          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error al interpretar respuesta del servidor." });
-        });
+        const script = document.createElement("script");
+        script.id = "jsonp-request";
+        
+        // Construimos la URL pasando el parámetro del QR y declarando la función callback de respuesta
+        script.src = WEB_APP_URL + "?codigoQR=" + encodeURIComponent(decodedText) + "&callback=procesarRespuestaServidorJSONP";
+        
+        script.onerror = function() {
+          mostrarRespuestaServidor({ ok: false, color: "red", mensaje: "Error crítico de conexión con Google." });
+        };
+
+        document.body.appendChild(script);
       }).catch(err => {
         procesandoScan = false;
       });
     }
+
+    // FUNCIÓN DE RETORNO GLOBAL: Es llamada automáticamente por la Web App de Google
+    window.procesarRespuestaServidorJSONP = function(data) {
+      // Removemos el tag temporal utilizado para la consulta
+      const script = document.getElementById("jsonp-request");
+      if (script) script.remove();
+
+      mostrarRespuestaServidor(data);
+    };
 
     function mostrarRespuestaServidor(data) {
       const r = document.getElementById("resultado");
