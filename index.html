@@ -31,8 +31,10 @@
   </div>
 
   <script>
-    // URL DE TU WEB APP DE GOOGLE APPS SCRIPT
-    const WEB_APP_URL = "https://docs.google.com/spreadsheets/d/10PMN70wkXVkdWJAV2NaHCXKFe8g0rvMCuuPr1Ip4yDU/edit?gid=0#gid=0"; // Reemplázala con tu URL real si varía
+    // 1. CORRECCIÓN MANDATORIA: Debes reemplazar esta URL por tu enlace ejecutable de Apps Script.
+    // Ej: "https://google.com"
+    // (La URL de Google Sheets actual causará un error de comunicación al escanear)
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx8iWNi6etMFaA_cWcT3ze-1wBoKp9-l_lbjjxNPsKDBgJBLJ3ScYZ_tdV1aOdjDo89/exec";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
@@ -70,8 +72,9 @@
           qrbox: { width: 250, height: 250 }
         };
 
+        // 2. CORRECCIÓN DE CÁMARA: Se cambia el objeto { ideal: "environment" } por un string directo
         html5QrcodeScanner.start(
-          { facingMode: { ideal: "environment" } }, 
+          "environment", 
           config,
           codigoDetectadoEnVivo
         ).then(() => {
