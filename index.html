@@ -288,9 +288,10 @@
       } else {
         // SI ES ERROR (Rojo / Naranja): Mantiene la vista de escaneo y muestra el aviso del servidor
         r.className = data.color || "red";
-        r.innerHTML = data.mensaje;
-        r.innerHTML = data.nombre;
-        r.innerHTML = data.turno;
+        r.innerHTML = `<strong>${data.mensaje || "Error"}</strong><br>
+      ${data.nombre ? 'Nombre: ' + data.nombre + '<br>' : ''}
+      ${data.turno ? 'Turno: ' + data.turno : ''}
+    `;
         
         // Espera automática de 8 segundos solo si falló el escaneo, para reabrir cámara
         setTimeout(() => {
