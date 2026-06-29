@@ -7,7 +7,19 @@
   
   <!-- Enlace local a la librería guardada en tu GitHub -->
   <script src="./html5-qrcode.min.js"></script>
-  
+
+  #pantallaCedula {
+  display: none;
+}
+
+#fotoCedula {
+  max-width: 95%;
+  max-height: 80vh;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  margin-top: 10px;
+}
+
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background-color: #f5f5f5; }
     h1 { color: #1565c0; }
@@ -30,9 +42,28 @@
     <div id="detalle"></div>
   </div>
 
+<div id="pantallaCedula">
+
+  <h1>DOCUMENTO VERIFICADO</h1>
+
+  <img id="fotoCedula" src="">
+
+  <div id="datosCedula"></div>
+
+  <br>
+
+  <button
+    class="btn-encender"
+    onclick="volverAEscanear()">
+    VOLVER A ESCANEAR
+  </button>
+
+</div>
+
+  
   <script>
     // URL DE TU IMPLEMENTACIÓN DE GOOGLE APPS SCRIPT
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxpBjzWdFjQO8OlA0fbhHNUOgNBAW795Q-yqObjUIV2u1-wPkBXLxpm-6ACv_CRWvF7/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzNWT4k3QMkqJLGI1YpANE9dqr3tTcjRv3Nl-UZHQdj-6GICJSyeFZVmmxWyb-L8mtj/exec";
 
     let html5QrcodeScanner = null;
     let procesandoScan = false;
@@ -60,8 +91,11 @@
       r.className = "";
       r.innerHTML = "Conectando con la cámara del dispositivo...";
 
-      try {
+      try { 
+        document.getElementById("reader").innerHTML = "";
         html5QrcodeScanner = new Html5Qrcode("reader");
+
+        
         const config = {}; 
 
         html5QrcodeScanner.start(
@@ -130,27 +164,127 @@
       mostrarRespuestaServidor(data);
     };
 
-    function mostrarRespuestaServidor(data) {
-      const r = document.getElementById("resultado");
-      const d = document.getElementById("detalle");
+   function mostrarRespuestaServidor(data) {
 
-      r.className = data.color || "red";
-      r.innerHTML = data.mensaje;
+  const r = document.getElementById("resultado");
+  const d = document.getElementById("detalle");
 
-      let html = "";
-      if (data.nombre) html += "<div class='info'><b>Nombre:</b> " + data.nombre + "</div>";
-      if (data.cedula) html += "<div class='info'><b>Cédula:</b> " + data.cedula + "</div>";
-      if (data.turno)  html += "<div class='info'><b>Turno:</b> " + data.turno + "</div>";
-      d.innerHTML = html;
+  r.className = data.color || "red";
+  r.innerHTML = data.mensaje;
 
-      setTimeout(() => {
-        r.innerHTML = "";
-        r.className = "";
-        d.innerHTML = "";
-        procesandoScan = false;
-        iniciarVideoTransmision(); 
-      }, 8000);
-    }
+  // Mostrar pantalla de documento cuando la validación es correcta
+  if (data.ok) {
+
+    document.getElementById("contenedor-principal").style.display = "none";
+    document.getElementById("pantallaCedula").style.display = "block";
+
+    document.getElementById("fotoCedula").src =
+      data.imagenCedula || "";
+
+    document.getElementById("datosCedula").innerHTML =
+
+      "<div class='info'><b>Nombre:</b> " +
+      (data.nombre || "") +
+      "</div>" +
+
+      "<div class='info'><b>Cédula:</b> " +
+      (data.cedula || "") +
+      "</div>" +
+
+      "<div class='info'><b>Turno:</b> " +
+      (data.turno || "") +
+      "</div>";
+
+    return;
+  }
+
+  let html = "";
+
+  if (data.nombre)
+    html += "<div class='info'><b>Nombre:</b> " + data.nombre + "</div>";
+
+  if (data.cedula)
+    html += "<div class='info'><b>Cédula:</b> " + data.cedula + "</div>";
+
+  if (data.turno)
+    html += "<div class='info'><b>Turno:</b> " + data.turno + "</div>";
+
+  d.innerHTML = html;
+
+  setTimeout(() => {
+
+    r.innerHTML = "";
+    r.className = "";
+
+    d.innerHTML = "";
+
+    procesandoScan = false;
+
+    iniciarVideoTransmision();
+
+  }, 8000);
+}
+
+function volverAEscanear() {
+
+  document.getElementById("pantallaCedula").style.display = "none";
+  document.getElementById("contenedor-principal").style.display = "block";
+
+  document.getElementById("fotoCedula").src = "";
+  document.getElementById("datosCedula").innerHTML = "";
+
+  document.getElementById("resultado").innerHTML = "";
+  document.getElementById("detalle").innerHTML = "";
+
+  procesandoScan = false;
+
+  if (html5QrcodeScanner) {
+
+    html5QrcodeScanner.stop()
+      .then(() => {
+
+        html5QrcodeScanner.clear()
+          .then(() => {
+
+            html5QrcodeScanner = null;
+
+            document.getElementById("reader").innerHTML = "";
+
+            iniciarVideoTransmision();
+
+          })
+          .catch(() => {
+
+            html5QrcodeScanner = null;
+
+            document.getElementById("reader").innerHTML = "";
+
+            iniciarVideoTransmision();
+
+          });
+
+      })
+      .catch(() => {
+
+        html5QrcodeScanner = null;
+
+        document.getElementById("reader").innerHTML = "";
+
+        iniciarVideoTransmision();
+
+      });
+
+  } else {
+
+    document.getElementById("reader").innerHTML = "";
+
+    iniciarVideoTransmision();
+
+  }
+}
+
+
+    
   </script>
 
 </body>
